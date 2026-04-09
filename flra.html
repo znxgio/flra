@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FLRA">
+<title>FLRA Submitter</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2f2f7; color: #1c1c1e; min-height: 100vh; }
+  .screen { display: none; padding: 24px 16px; max-width: 540px; margin: 0 auto; }
+  .screen.active { display: block; }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: #6e6e73; margin-bottom: 24px; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #6e6e73; text-transform: uppercase; margin-bottom: 10px; margin-top: 24px; }
+  .section-label:first-of-type { margin-top: 0; }
+  .field { margin-bottom: 16px; }
+  label { font-size: 13px; color: #6e6e73; display: block; margin-bottom: 6px; }
+  select, input[type="text"] {
+    width: 100%; padding: 12px 14px; font-size: 16px;
+    border: 1px solid #d1d1d6; border-radius: 12px;
+    background: #fff; color: #1c1c1e;
+    appearance: none; -webkit-appearance: none;
+  }
+  select:focus, input:focus { outline: none; border-color: #007aff; }
+  .btn {
+    width: 100%; padding: 15px; font-size: 17px; font-weight: 600;
+    border: none; border-radius: 14px; cursor: pointer; margin-top: 8px;
+    transition: opacity 0.15s;
+  }
+  .btn:active { opacity: 0.75; }
+  .btn-blue { background: #007aff; color: #fff; }
+  .btn-green { background: #34c759; color: #fff; }
+  .btn-gray { background: #e5e5ea; color: #3a3a3c; margin-top: 12px; }
+  .btn:disabled { opacity: 0.4; }
+  .wo-match { font-size: 13px; margin-top: 5px; }
+  .wo-match.ok { color: #34c759; }
+  .wo-match.err { color: #ff3b30; }
+  .dots { display: flex; gap: 8px; margin-bottom: 20px; }
+  .dot {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    background: #e5e5ea; color: #6e6e73;
+  }
+  .dot.done { background: #34c759; color: #fff; }
+  .dot.active { background: #007aff; color: #fff; }
+  .confirm-card {
+    background: #fff; border-radius: 14px; padding: 16px;
+    margin-bottom: 20px; border: 1px solid #e5e5ea;
+  }
+  .confirm-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 0; border-bottom: 1px solid #f2f2f7;
+  }
+  .confirm-row:last-child { border-bottom: none; }
+  .confirm-key { font-size: 13px; color: #6e6e73; }
+  .confirm-val { font-size: 14px; font-weight: 500; color: #1c1c1e; text-align: right; }
+  .status-box {
+    padding: 14px; border-radius: 12px; font-size: 15px;
+    font-weight: 500; margin-bottom: 16px; text-align: center;
+  }
+  .status-box.sending { background: #f2f2f7; color: #6e6e73; }
+  .status-box.ok { background: #d1f2da; color: #1a7f37; }
+  .status-box.err { background: #ffe5e5; color: #c0392b; }
+  .progress-label { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: #1c1c1e; }
+  .done-wrap { text-align: center; padding: 48px 0 24px; }
+  .done-icon { font-size: 64px; margin-bottom: 16px; }
+  .done-title { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .done-sub { font-size: 15px; color: #6e6e73; margin-bottom: 32px; }
+</style>
+</head>
+<body>
+
+<div class="screen active" id="setup-screen">
+  <h1>FLRA Submitter</h1>
+  <p class="sub">Patrick McCarty — UPS Account</p>
+
+  <div class="section-label">Building</div>
+  <div class="field">
+    <label>UPS building ID</label>
+    <select id="bldg">
+      <option value="CASDA">CASDA</option>
+      <option value="CASDI">CASDI</option>
+      <option value="CASMR">CASMR</option>
+      <option value="CALSB">CALSB</option>
+    </select>
+  </div>
+
+  <div class="section-label">Manager</div>
+  <div class="field">
+    <label>FM / Manager</label>
+    <select id="fm">
+      <option value="Ben Rollison">Ben Rollison</option>
+      <option value="Billy Midgett">Billy Midgett</option>
+      <option value="Brandon Casey">Brandon Casey</option>
+      <option value="Bruno Ferreira">Bruno Ferreira</option>
+      <option value="Cesar Alvarez">Cesar Alvarez</option>
+      <option value="Chris Nobile">Chris Nobile</option>
+      <option value="Cindy Praye">Cindy Praye</option>
+      <option value="Cornel Sneekes">Cornel Sneekes</option>
+      <option value="Jeremy Orth">Jeremy Orth</option>
+      <option value="Jessica Cooper">Jessica Cooper</option>
+      <option value="John Harvey">John Harvey</option>
+      <option value="Karen Sturm">Karen Sturm</option>
+      <option value="Kyle Davis">Kyle Davis</option>
+      <option value="Lowell Anderson">Lowell Anderson</option>
+      <option value="Lowell Wilson">Lowell Wilson</option>
+      <option value="Mike Nuccio">Mike Nuccio</option>
+      <option value="Patrick Perry">Patrick Perry</option>
+      <option value="Pete Lawrie">Pete Lawrie</option>
+      <option value="Rick Smeal">Rick Smeal</option>
+      <option value="Ricky Ovington">Ricky Ovington</option>
+      <option value="Ron Brooks">Ron Brooks</option>
+      <option value="Sam Lach">Sam Lach</option>
+      <option value="Simon Jeffrey">Simon Jeffrey</option>
+      <option value="Stefan Tchor">Stefan Tchor</option>
+      <option value="Stephen Clarke">Stephen Clarke</option>
+      <option value="Tegan Morris">Tegan Morris</option>
+      <option value="Thad Tinkham">Thad Tinkham</option>
+      <option value="William Plemons">William Plemons</option>
+    </select>
+  </div>
+
+  <div class="section-label">Work order</div>
+  <div class="field">
+    <label>Work order #</label>
+    <input type="text" id="wo1" placeholder="e.g. p3089788" />
+  </div>
+  <div class="field">
+    <label>Verify work order #</label>
+    <input type="text" id="wo2" placeholder="Re-enter to confirm" />
+    <div class="wo-match" id="wo-status"></div>
+  </div>
+
+  <button class="btn btn-blue" id="startBtn">Start submissions</button>
+</div>
+
+<div class="screen" id="submit-screen">
+  <div class="progress-label" id="progress-label">Submission 1 of 8</div>
+  <div class="dots" id="dots"></div>
+  <div class="confirm-card" id="confirm-card"></div>
+  <div class="status-box" id="status-box" style="display:none;"></div>
+  <button class="btn btn-blue" id="sendBtn">Submit this FLRA</button>
+  <button class="btn btn-gray" id="resetBtn">Start over</button>
+</div>
+
+<div class="screen" id="done-screen">
+  <div class="done-wrap">
+    <div class="done-icon">✅</div>
+    <div class="done-title">All 8 submitted</div>
+    <div class="done-sub">FLRAs complete for this job.</div>
+  </div>
+  <button class="btn btn-blue" id="newJobBtn">New job</button>
+</div>
+
+<script>
+const PROXY = 'https://shy-shape-760d.znxgio.workers.dev/';
+
+let currentStep = 0;
+let jobData = {};
+let sending = false;
+let nextReady = false;
+
+const wo1 = document.getElementById('wo1');
+const wo2 = document.getElementById('wo2');
+const woStatus = document.getElementById('wo-status');
+
+wo1.addEventListener('input', checkWO);
+wo2.addEventListener('input', checkWO);
+
+function checkWO() {
+  if (!wo2.value) { woStatus.textContent = ''; return; }
+  if (wo1.value === wo2.value && wo1.value.length > 0) {
+    woStatus.textContent = '✓ Match'; woStatus.className = 'wo-match ok';
+  } else {
+    woStatus.textContent = 'No match'; woStatus.className = 'wo-match err';
+  }
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(name + '-screen').classList.add('active');
+}
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function buildDots() {
+  const el = document.getElementById('dots');
+  el.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const d = document.createElement('div');
+    if (i < currentStep) { d.className = 'dot done'; d.textContent = '✓'; }
+    else if (i === currentStep) { d.className = 'dot active'; d.textContent = i + 1; }
+    else { d.className = 'dot'; d.textContent = i + 1; }
+    el.appendChild(d);
+  }
+}
+
+function updateSubmitScreen() {
+  nextReady = false;
+  document.getElementById('progress-label').textContent = 'Submission ' + (currentStep + 1) + ' of 8';
+  buildDots();
+  const isFirst = currentStep === 0;
+  document.getElementById('confirm-card').innerHTML =
+    '<div class="confirm-row"><span class="confirm-key">Building</span><span class="confirm-val">' + jobData.bldg + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">FM / Manager</span><span class="confirm-val">' + jobData.fm + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Work order</span><span class="confirm-val">' + jobData.wo + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Date</span><span class="confirm-val">' + getToday() + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">First job of day</span><span class="confirm-val">' + (isFirst ? 'Yes' : 'No') + '</span></div>';
+  const statusBox = document.getElementById('status-box');
+  statusBox.style.display = 'none';
+  const btn = document.getElementById('sendBtn');
+  btn.textContent = 'Submit this FLRA';
+  btn.className = 'btn btn-blue';
+  btn.disabled = false;
+}
+
+function s(val) {
+  return { type: 'STRING', value: val };
+}
+
+function buildPayload(isFirst) {
+  return {
+    'vO58ERPG9': s('Patrick McCarty'),
+    'nX6gjKMDw': s(getToday()),
+    'yZz1vNJAK': s(jobData.fm),
+    'Z5Rb956yq': s(jobData.bldg),
+    'q83jgk9wP': s(isFirst ? 'Yes' : 'No'),
+    'Ky1nlJMEM': s('Yes'),
+    'QDlYMJ3an': s('Yes'),
+    'jXEpZQD8l': s('No'),
+    'NjQAOJR5N': s('No'),
+    'GYodyJDKQ': s('No'),
+    '31kQKGd2l': s('No'),
+    'PbjkeJ690': s('No'),
+    'pQambOqRw': s('No'),
+    'nX6gjKMEw': s('No'),
+    'ANo6kAyO2': s('No'),
+    'YaqKPJvY9': s('No'),
+    'zAXD6a9p2': s('Yes'),
+    'Z5ROoJnwZ': s('No'),
+    'J9nvjJe3d': s('No'),
+    'LQoWbJEP2': s('No'),
+    'rj5YOeG68': s('No'),
+    '7wkb5PnLP': s('No'),
+    'yZkbG3d9G': s('No'),
+    '80kDdoKXA': s('No'),
+    'Ol8KN7Gdm': s('Yes'),
+    'NjQAOJRZN': s('Okay'),
+    'epDPKJQ3R': s('No'),
+    'EPzo2wlWY': s('No'),
+    'QDlYMJ3Lv': s(jobData.wo),
+    '80kDdoKRv': s(jobData.wo),
+    'jXEpZQDdz': s(''),
+    'EMAIL_RECEIPT': s('')
+  };
+}
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  const wo = wo1.value.trim();
+  if (!wo) { alert('Enter a work order number.'); return; }
+  if (wo !== wo2.value.trim()) { alert('Work order numbers do not match.'); return; }
+  jobData = { bldg: document.getElementById('bldg').value, fm: document.getElementById('fm').value, wo };
+  currentStep = 0;
+  showScreen('submit');
+  updateSubmitScreen();
+});
+
+document.getElementById('sendBtn').addEventListener('click', async () => {
+  if (nextReady) {
+    updateSubmitScreen();
+    return;
+  }
+  if (sending) return;
+  sending = true;
+
+  const btn = document.getElementById('sendBtn');
+  const statusBox = document.getElementById('status-box');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  statusBox.style.display = 'block';
+  statusBox.className = 'status-box sending';
+  statusBox.textContent = 'Sending to Smartsheet...';
+
+  try {
+    const isFirst = currentStep === 0;
+    const payload = buildPayload(isFirst);
+
+    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    const formData = new FormData();
+    formData.append('data', blob, 'blob');
+
+    const res = await fetch(PROXY, {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await res.json();
+    if (result.status && result.status >= 400) throw new Error('HTTP ' + result.status + ': ' + result.body);
+    if (!result.submissionId && !(result.body && JSON.parse(result.body).submissionId)) throw new Error('Unexpected response');
+
+    statusBox.className = 'status-box ok';
+    statusBox.textContent = 'Submission ' + (currentStep + 1) + ' of 8 confirmed ✓';
+    currentStep++;
+
+    if (currentStep >= 8) {
+      setTimeout(() => showScreen('done'), 900);
+    } else {
+      btn.textContent = 'Next →';
+      btn.className = 'btn btn-green';
+      btn.disabled = false;
+      nextReady = true;
+      buildDots();
+    }
+
+  } catch(e) {
+    statusBox.className = 'status-box err';
+    statusBox.textContent = 'Failed: ' + e.message + '. Tap to retry.';
+    btn.textContent = 'Retry';
+    btn.className = 'btn btn-blue';
+    btn.disabled = false;
+  }
+
+  sending = false;
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  currentStep = 0; wo1.value = ''; wo2.value = ''; woStatus.textContent = '';
+  showScreen('setup');
+});
+
+document.getElementById('newJobBtn').addEventListener('click', () => {
+  currentStep = 0; wo1.value = ''; wo2.value = ''; woStatus.textContent = '';
+  showScreen('setup');
+});
+</script>
+</body>
+</html>
